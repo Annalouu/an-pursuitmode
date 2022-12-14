@@ -37,7 +37,7 @@ elseif Config.framework == 'esx' then
         playerJob = job
     end)
 end
-    
+
 
 function fixVehicleHandling(veh)
     SetVehicleModKit(veh,0)
@@ -109,7 +109,7 @@ end
 
 function applyVehicleMods(vehicle)
     local vehicleMode = Config.VehicleModes[gear]
-    
+
     ToggleVehicleMod(vehicle, 18, Config["VehicleModifications"][vehicleMode]["Turbo"]) -- Turbo
     ToggleVehicleMod(vehicle, 22, Config["VehicleModifications"][vehicleMode]["XenonHeadlights"]) -- Xenon Headlights
     SetVehicleMod(vehicle, 11, Config["VehicleModifications"][vehicleMode]["Engine"], false) -- Engine
@@ -117,10 +117,6 @@ function applyVehicleMods(vehicle)
     SetVehicleMod(vehicle, 13, Config["VehicleModifications"][vehicleMode]["Transmission"], false) -- Transmission
     SetVehicleXenonLightsColour(vehicle, Config["VehicleModifications"][vehicleMode]["XenonHeadlightsColor"]) -- Xenon Headlights Color
 
-    if Config.SlowdownOnSwitch then
-        local speed = GetEntitySpeed(vehicle)
-        SetVehicleForwardSpeed(vehicle, speed * (1.0 - Config.SlowdownPercentage))
-    end
 end
 
 function updateVehicleMode(vehicle)
@@ -173,11 +169,11 @@ AddEventHandler('an-pursuitmode:client:updateVehicleMode', function()
             updateHandling(vehicle)
             applyVehicleMods(vehicle)
             if Config.framework == 'qbcore' then
-            QBCore.Functions.Notify((Config.SwitchNotification):format(currentVehicleMode))
+            QBCore.Functions.Notify((Config.Notification):format(currentVehicleMode))
             elseif Config.framework == 'esx' then
                 lib.notify({
                     title = 'success',
-                    description = (Config.SwitchNotification):format(currentVehicleMode),
+                    description = (Config.Notification):format(currentVehicleMode),
                     type = 'success',
                     duration = 1000,
             })
