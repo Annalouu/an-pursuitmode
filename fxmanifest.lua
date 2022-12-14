@@ -7,12 +7,12 @@ description 'an-pursuitmode'
 client_scripts { 
     "config.lua", 
     "handling.lua", 
-    "client.lua" 
+    "client.lua",
+    "import.lua"
 }
 
 shared_scripts {
     '@ox_lib/init.lua',
-    '@es_extended/imports.lua',
 }
 
 exports {

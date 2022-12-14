@@ -2,13 +2,15 @@ Config = {}
 
 Config.DefaultKey = 'N'
 Config.framework = 'esx' -- qbcore / esx
-Config.Notification = "%s mode applied" -- %s is the vehiclemode
+Config.SlowdownOnSwitch = false
+Config.SlowdownPercentage = 0.2 -- 0.2 => 20%
+Config.SwitchNotification = "Changed mode to %s" -- %s will be replaced with the vehicle mode, e.g. S+
 
-Config.AuthorizedJobs = {
+Config.AuthorizedJobs = { -- empty => everyone can use it
     "police",
 }
 
-Config.VehicleModes = { 
+Config.VehicleModes = { -- If you define a new mode, you will have to add a new Vehicle Modification and a new mode for EVERY vehicle defined in Config.VehiclesConfig!
     "C",
     "B",
     "A",
@@ -50,7 +52,7 @@ Config.VehicleModifications = { -- define each mode their own modifications
     }
 }
 
- Config.VehiclesConfig = {
+ Config.VehiclesConfig = { -- if you want 
     ["police"] = {
         ["C"] = {
             ["fDriveInertia"] = 1.000000,

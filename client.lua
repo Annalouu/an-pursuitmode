@@ -117,6 +117,10 @@ function applyVehicleMods(vehicle)
     SetVehicleMod(vehicle, 13, Config["VehicleModifications"][vehicleMode]["Transmission"], false) -- Transmission
     SetVehicleXenonLightsColour(vehicle, Config["VehicleModifications"][vehicleMode]["XenonHeadlightsColor"]) -- Xenon Headlights Color
 
+    if Config.SlowdownOnSwitch then
+        local speed = GetEntitySpeed(vehicle)
+        SetVehicleForwardSpeed(vehicle, speed * (1.0 - Config.SlowdownPercentage))
+    end
 end
 
 function updateVehicleMode(vehicle)
@@ -169,11 +173,11 @@ AddEventHandler('an-pursuitmode:client:updateVehicleMode', function()
             updateHandling(vehicle)
             applyVehicleMods(vehicle)
             if Config.framework == 'qbcore' then
-            QBCore.Functions.Notify((Config.Notification):format(currentVehicleMode))
+            QBCore.Functions.Notify((Config.SwitchNotification):format(currentVehicleMode))
             elseif Config.framework == 'esx' then
                 lib.notify({
                     title = 'success',
-                    description = (Config.Notification):format(currentVehicleMode),
+                    description = (Config.SwitchNotification):format(currentVehicleMode),
                     type = 'success',
                     duration = 1000,
             })
