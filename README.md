@@ -1,6 +1,6 @@
 # an-pursuitmode
 
-Originally from https://github.com/Spazd/qb-pursuitmode
+Originally from https://github.com/JonasDev99/qb-pursuitmode/
 
 Lets you change handling modes like Nopixel.
 
