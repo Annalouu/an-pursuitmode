@@ -126,7 +126,6 @@ function updateVehicleMode(vehicle)
     end
     currentVehicle = vehicle
     currentVehicleMode = Config.VehicleModes[gear]
-    TriggerEvent('an-pursuitmode:vehicleModeChanged', currentVehicleMode)
 end
 
 function updatePlayerInfo()
