@@ -5,8 +5,7 @@ lua54 'yes'
 description 'an-pursuitmode'
 
 client_scripts { 
-    "config.lua", 
-    "handling.lua", 
+    "config.lua",
     "client.lua",
     "import.lua"
 }
