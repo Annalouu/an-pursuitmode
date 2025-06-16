@@ -1,20 +1,15 @@
-fx_version "adamant"
-
-game "gta5"
+fx_version 'cerulean'
+game 'gta5'
 lua54 'yes'
-description 'an-pursuitmode'
+
+author 'Lenix'
+description 'Patrol Modes for FiveM'
+version '1.0.0'
+repository 'https://github.com/lenix-x/patrolmodes'
 
 client_scripts { 
-    "config.lua",
-    "client.lua",
-    "import.lua"
+    'config.lua',
+    'client/*.lua',
 }
 
-shared_scripts {
-    '@ox_lib/init.lua',
-}
-
-exports {
-    'GetVehicleMode',
-}
- 
+shared_script '@ox_lib/init.lua'
