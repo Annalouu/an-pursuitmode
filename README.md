@@ -214,4 +214,5 @@ SetVehicleHandlingFloat(vehicle, "CHandlingData", "fBrakeForce", config.fBrakeFo
 
 ## Credit
 
-Forked From [Annalouu](https://github.com/Annalouu)
+Original [Annalouu](https://github.com/Annalouu)
+Refactored by [LenixDev](https://github.com/LenixDev)
