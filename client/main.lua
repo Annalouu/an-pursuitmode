@@ -1,55 +1,33 @@
-local originalPrint = print
-print = function(...)
-    local info = debug.getinfo(2, "Sl")
-    local lineInfo = info.short_src .. ":" .. info.currentline
-    return Config.Print and originalPrint("[" .. lineInfo .. "]", ...)
-end
-
 (function()
-    if GetResourceState(Config.Core .. 'core') == 'started' then
-        Core = exports[Config.Core .. 'core']:GetCoreObject()
-        Shared = Core.Shared
-        for tier, vehicles in pairs(Config.VehicleTiers) do
-            for _, model in pairs(vehicles) do
-                if Shared.Vehicles[model] then
-                    Shared.Vehicles[model].tier = tier
-                    Shared.VehicleHashes[Shared.Vehicles[model].hash].tier = tier
-                    print('Vehicle ' .. model .. ' has been assigned to tier: ' .. tier)
-                else
-                    print('Vehicle ' .. model .. ' not found in Shared.Vehicles, skipping tier assignment.')
-                end
+    Shared = Core.Shared
+    for tier, vehicles in pairs(Option.VehicleTiers) do
+        for _, model in pairs(vehicles) do
+            if Shared.Vehicles[model] then
+                Shared.Vehicles[model].tier = tier
+                Shared.VehicleHashes[Shared.Vehicles[model].hash].tier = tier
+                print('Vehicle ' .. model .. ' has been assigned to tier: ' .. tier)
+            else
+                print('Vehicle ' .. model .. ' not found in Shared.Vehicles, skipping tier assignment.')
             end
         end
-    else
-        print('qb-core not started, please start it before this resource.')
     end
 end)()
 
 local gear, currentVehicle = 1, 0
-local currentVehicleMode = Config.VehicleModes[1]
+local currentVehicleMode = Option.VehicleModes[1]
 local playerJob = { ['name'] = 'unemployed' }
-local hashModelMap = {}
 
-local function addTierData()
-    for tier, model in pairs(Config.VehicleTiers) do
-        if Shared.Vehicles[model] then
-            Shared.Vehicles[model].tier = tier
-            Shared.VehicleHashes[Shared.Vehicles[model].hash].tier = tier
-        end
-    end
-end
-
-function getVehicleData(vehicleEntity)
+function GetVehicleData()
     local vehicleEntity = GetVehiclePedIsIn(PlayerPedId(), false)
     local vehicleData = Shared.VehicleHashes[GetEntityModel(vehicleEntity)]
     return vehicleData
 end
 
-function isCheckValid()
-    local vehicleData = getVehicleData(vehicleEntity)
+function IsCheckValid()
+    local vehicleData = GetVehicleData()
     local vehicleEntity = GetVehiclePedIsIn(PlayerPedId(), false)
-    if DoesEntityExist(vehicleEntity) and isAuthorizedToSwitchMode() and vehicleData.category == 'emergency' then
-        for i, tierData in pairs(Config.TierConfig) do
+    if DoesEntityExist(vehicleEntity) and IsAuthorizedToSwitchMode() and vehicleData.category == 'emergency' then
+        for i, tierData in pairs(Option.TierConfig) do
             if i == vehicleData.tier then
                 print('Valid tier found: ' .. i)
                 print('Vehicle category: ' .. vehicleData.category)
@@ -61,12 +39,10 @@ function isCheckValid()
     return false
 end
 
-function getHandlingConfig(vehicleHash)
-    local vehicleModel = getModelFromHash(vehicleHash)
-    local vehicleData = getVehicleData()
+function GetHandlingConfig()
     local vehicleMode = GetVehicleMode()
 
-    for tier, tierData in pairs(Config.TierConfig) do
+    for tier, tierData in pairs(Option.TierConfig) do
         for mode, modeData in pairs(tierData) do
             if vehicleMode == mode then
                 print(json.encode(modeData) .. ' : 1')
@@ -77,15 +53,14 @@ function getHandlingConfig(vehicleHash)
     end
 end
 
-function getModelFromHash(hash)
-    local vehicleData = getVehicleData()
-    local vehicleHash = vehicleData.hash
+function GetModelFromHash()
+    local vehicleData = GetVehicleData()
     local model = vehicleData.model
     return model
 end
 
-function updateHandling(vehicle)
-    local handlingConfig = getHandlingConfig(GetEntityModel(vehicle))
+function UpdateHandling(vehicle)
+    local handlingConfig = GetHandlingConfig(GetEntityModel(vehicle))
     print('Handling config for vehicle: ' .. json.encode(handlingConfig))
     for k, v in pairs(handlingConfig) do
         if math.type(v) == 'float' then
@@ -96,33 +71,33 @@ function updateHandling(vehicle)
             SetVehicleHandlingVector(vehicle, "CHandlingData", k, v)
         end
     end
-    fixVehicleHandling(vehicle)
+    FixVehicleHandling(vehicle)
 end
 
 function GetVehicleMode()
     return currentVehicleMode
 end
 
-function updatePlayerInfo()
+function UpdatePlayerInfo()
     local playerData = Core.Functions.GetPlayerData()
     playerJob = playerData.job
 end
 
-function updateVehicleMode(vehicle)
-    gear = gear % #Config.VehicleModes + 1
+function UpdateVehicleMode(vehicle)
+    gear = gear % #Option.VehicleModes + 1
     if vehicle ~= currentVehicle then
         gear = 1
     end
     currentVehicle = vehicle
-    currentVehicleMode = Config.VehicleModes[gear]
+    currentVehicleMode = Option.VehicleModes[gear]
     print('Current vehicle mode: ' .. currentVehicleMode)
 end
 
-function isAuthorizedToSwitchMode()
-    if next(Config.AuthorizedJobs) == nil then -- No jobs defined
+function IsAuthorizedToSwitchMode()
+    if next(Option.AuthorizedJobs) == nil then -- No jobs defined
         return true
     end
-    for _, v in ipairs(Config.AuthorizedJobs) do
+    for _, v in ipairs(Option.AuthorizedJobs) do
         if playerJob.name == v then
             return true
         end
@@ -130,17 +105,18 @@ function isAuthorizedToSwitchMode()
     return false
 end
 
-function applyVehicleMods(vehicle)
-    local vehicleMode = Config.VehicleModes[gear]
+function ApplyVehicleMods(vehicle)
+    local vehicleMode = Option.VehicleModes[gear]
     print('Applying vehicle mods for mode: ' .. vehicleMode)
 
-    ToggleVehicleMod(vehicle, 18, Config["VehicleModifications"][vehicleMode]["Turbo"]) -- Turbo
-    SetVehicleMod(vehicle, 11, Config["VehicleModifications"][vehicleMode]["Engine"], false) -- Engine
-    SetVehicleMod(vehicle, 12, Config["VehicleModifications"][vehicleMode]["Brakes"], false) -- Brakes
-    SetVehicleMod(vehicle, 13, Config["VehicleModifications"][vehicleMode]["Transmission"], false) -- Transmission
+    ToggleVehicleMod(vehicle, 18, Option.VehicleModifications[vehicleMode].Turbo) -- Turbo
+    print(GetVehicleMod(vehicle, 18))
+    SetVehicleMod(vehicle, 11, Option.VehicleModifications[vehicleMode].Engine, false) -- Engine
+    SetVehicleMod(vehicle, 12, Option.VehicleModifications[vehicleMode].Brakes, false) -- Brakes
+    SetVehicleMod(vehicle, 13, Option.VehicleModifications[vehicleMode].Transmission, false) -- Transmission
 end
 
-function fixVehicleHandling(veh)
+function FixVehicleHandling(veh)
     SetVehicleModKit(veh, 0)
     SetVehicleMod(veh, 0, GetVehicleMod(veh, 0), false)
     SetVehicleMod(veh, 1, GetVehicleMod(veh, 1), false)
@@ -172,26 +148,26 @@ function fixVehicleHandling(veh)
 end
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    updatePlayerInfo()
+    UpdatePlayerInfo()
 end)
 
 RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
     playerJob = job
 end)
 
-RegisterNetEvent('patrolmodes:client:updateVehicleMode')
-AddEventHandler('patrolmodes:client:updateVehicleMode', function()
-    local vehicle = isCheckValid()
+RegisterNetEvent('patrol_system:client:updatemode')
+AddEventHandler('patrol_system:client:updatemode', function()
+    local vehicle = IsCheckValid()
     if vehicle then
-        updateVehicleMode(vehicle)
-        updateHandling(vehicle)
-        applyVehicleMods(vehicle)
-        if Config.Notify == 'qb-core' then
-            Core.Functions.Notify((Config.Notification):format(currentVehicleMode), 'success', 1500)
-        elseif Config.Notify == 'ox_lib' then
+        UpdateVehicleMode(vehicle)
+        UpdateHandling(vehicle)
+        ApplyVehicleMods(vehicle)
+        if Notify == 'qb' then
+            Core.Functions.Notify((Option.Notification):format(currentVehicleMode), 'success', 1500)
+        elseif Notify == 'ox_lib' then
             lib.notify({
                 title = 'success',
-                description = (Config.Notification):format(currentVehicleMode),
+                description = (Option.Notification):format(currentVehicleMode),
                 type = 'success',
                 duration = 1500,
             })
@@ -203,11 +179,11 @@ AddEventHandler('onClientResourceStart', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then
         return
     end
-    updatePlayerInfo()
+    UpdatePlayerInfo()
 end)
 
 RegisterCommand("pursuitmode", function(source, args, rawCommand)
-    TriggerEvent('patrolmodes:client:updateVehicleMode')
+    TriggerEvent('patrol_system:client:updatemode')
 end, false)
 
-RegisterKeyMapping('pursuitmode', 'Change pursuitmode', 'keyboard', Config.DefaultKey)
+RegisterKeyMapping('pursuitmode', 'Change pursuitmode', 'keyboard', Option.DefaultKey)

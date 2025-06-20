@@ -1,64 +1,59 @@
-Config = {}
-Config.Print = false
-Config.Core = 'qb-'
-Config.DefaultKey = 'N'
-Config.Notify = 'qb-core'
-Config.Notification = "%s mode applied"
-
-Config.AuthorizedJobs = {
-    "police",
+Option.DefaultKey = 'N'
+Option.Notification = "%s mode applied"
+Option.AuthorizedJobs = {
+    nil,
 }
 
-Config.VehicleTiers = {
-    ['S'] = {
+Option.VehicleTiers = {
+    S = {
         'police',
     },
-    ['A'] = {
+    A = {
         'police2',
     },
-    ['B'] = {
+    B = {
         'police3',
     },
-    ['C'] = {
+    C = {
         'police4',
     },
 }
 
-Config.VehicleModes = { 
+Option.VehicleModes = { 
     "N",
     "S",
     "S+",
     "R"
 }
 
-Config.VehicleModifications = {
+Option.VehicleModifications = {
     ["N"] = {
-        ["Turbo"] = false,
-        ["Engine"] = -1,
-        ["Brakes"] = 0,
-        ["Transmission"] = -1,
+        Turbo = false,
+        Engine = -1,
+        Brakes = 0,
+        Transmission = -1,
     },
     ["S"] = {
-        ["Turbo"] = false,
-        ["Engine"] = 1,
-        ["Brakes"] = 1,
-        ["Transmission"] = 1,
+        Turbo = false,
+        Engine = 1,
+        Brakes = 1,
+        Transmission = 1,
     },
     ["S+"] = {
-        ["Turbo"] = true,
-        ["Engine"] = 2,
-        ["Brakes"] = 2,
-        ["Transmission"] = 2,
+        Turbo = true,
+        Engine = 2,
+        Brakes = 2,
+        Transmission = 2,
     },
     ["R"] = {
-        ["Turbo"] = true,
-        ["Engine"] = 3,
-        ["Brakes"] = 2,
-        ["Transmission"] = 2,
+        Turbo = true,
+        Engine = 3,
+        Brakes = 2,
+        Transmission = 2,
     }
 }
 
-Config.TierConfig = {
+Option.TierConfig = {
     ["C"] = {
         ["N"] = {
             ["fDriveInertia"] = 1.000000,
