@@ -1,20 +1,10 @@
-fx_version "adamant"
-
-game "gta5"
+fx_version 'cerulean'
+game 'gta5'
 lua54 'yes'
-description 'an-pursuitmode'
 
-client_scripts { 
-    "config.lua",
-    "client.lua",
-    "import.lua"
-}
+author 'Lenix <https://github.com/LenixDev>'
+description 'Patrol System: Garage, Mic, Modes'
+version '1.0.0'
 
-shared_scripts {
-    '@ox_lib/init.lua',
-}
-
-exports {
-    'GetVehicleMode',
-}
- 
+shared_scripts {'shared/*.lua', 'option/*.lua', '@ox_lib/init.lua'}
+client_script 'client/**/*.lua'
