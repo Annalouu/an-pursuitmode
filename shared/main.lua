@@ -1,6 +1,6 @@
 Option = {}
 Option.Print = true
-Core = 'trplr_core'
+Core = 'automatic'
 Notify = 'qb'
 
 if Core == 'automatic' then
